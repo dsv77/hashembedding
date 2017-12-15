@@ -1,5 +1,5 @@
 from layers import HashEmbedding, ReduceSum
-from keras.layers import Input, Dense, Activation, Embedding, BatchNormalization
+from keras.layers import Input, Dense, Activation, Embedding
 from keras.models import Model
 import hashlib
 import nltk
@@ -28,10 +28,10 @@ def word_encoder(w, max_idx):
 
 
 if __name__ == '__main__':
-    use_hash_embeddings = False
+    use_hash_embeddings = True
     embedding_size = 20
-    num_buckets = 5000
-    max_words = 5*(10**4)
+    num_buckets = 5000 # number of buckets in second hashing layer (hash embedding)
+    max_words = 10**6  # number of buckets in first hashing layer
     max_epochs = 50
     num_hash_functions = 2
 
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     categories = ['alt.atheism', 'soc.religion.christian', 'comp.graphics', 'sci.med']
     num_classes = len(categories)
     twenty_train = fetch_20newsgroups(subset='train', categories=categories, shuffle=True, random_state=42)
-    data = [nltk.word_tokenize(text)[0:50] for text in twenty_train.data]
+    data = [nltk.word_tokenize(text)[0:150] for text in twenty_train.data]
     # data = [nltk.word_tokenize(text) for text in twenty_train.data]
     data_encoded = [[word_encoder(w, max_words) for w in text] for text in data]
     max_len = max([len(d) for d in data])
